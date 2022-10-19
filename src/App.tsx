@@ -5,34 +5,47 @@ import "./App.css"
 import React, { useState, useEffect } from "react"
 import axios from "axios"
 
-function dateDiffInDays(a: Date, b: Date) {
-  const _MS_PER_DAY = 1000 * 60 * 60 * 24
-  // Discard the time and time-zone information.
-  const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())
-  const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate())
+function getRemaningTime(start: number, current: number, end: number) {
+  const countdown_mili = end - (current - start)
+  const days = Math.floor(countdown_mili / (24 * 60 * 60 * 1000))
+  const dayscountdown_mili = countdown_mili % (24 * 60 * 60 * 1000)
+  const hours = Math.floor(dayscountdown_mili / (60 * 60 * 1000))
+  const hourscountdown_mili = countdown_mili % (60 * 60 * 1000)
+  const minutes = Math.floor(hourscountdown_mili / (60 * 1000))
+  const minutescountdown_mili = countdown_mili % (60 * 1000)
+  const sec = Math.floor(minutescountdown_mili / 1000)
 
-  return Math.floor((utc2 - utc1) / _MS_PER_DAY)
+  return { days: days, hours: hours, minutes: minutes, seconds: sec }
 }
 
 function App() {
-  const [StartTime, setStartTime] = useState(new Date())
-  const [EndTime, setEndTime] = useState()
-  const [CurrentTime, setCurrentTime] = useState(new Date())
+  const [startTime, setstartTime] = useState(0)
+  const [currentTime, setcurrentTime] = useState(0)
+  const [remainingTime, setRemainingTime] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  })
+  const endTime = 2592000000
 
   useEffect(() => {
     axios("http://localhost:3333/main").then((response) => {
-      setStartTime(response.data)
+      const startDate = new Date(response.data.createdAt)
+      const startTimeMili = startDate.getTime()
+      setstartTime(startTimeMili)
     })
   }, [])
 
   useEffect(() => {
-    const dateNow = new Date()
-    const interval = setInterval(() => setCurrentTime(dateNow), 1000)
+    let dateNow = new Date()
+    let time = dateNow.getTime()
+    const interval = setInterval(() => setcurrentTime(time), 1000)
+    setRemainingTime(getRemaningTime(startTime, currentTime, endTime))
     return () => {
       clearInterval(interval)
-      console.log(CurrentTime)
     }
-  })
+  }, [currentTime])
 
   return (
     <div className="App">
@@ -51,13 +64,21 @@ function App() {
             </div>
 
             <div className="number">
-              <p id="day_number">99</p>
+              <p id="day_number">
+                {String(remainingTime.days).padStart(2, "0")}
+              </p>
               <p>:</p>
-              <p id="hour_number">23</p>
+              <p id="hour_number">
+                {String(remainingTime.hours).padStart(2, "0")}
+              </p>
               <p>:</p>
-              <p id="minute_number">59</p>
+              <p id="minute_number">
+                {String(remainingTime.minutes).padStart(2, "0")}
+              </p>
               <p>:</p>
-              <p id="second_number">59</p>
+              <p id="second_number">
+                {String(remainingTime.seconds).padStart(2, "0")}
+              </p>
             </div>
           </div>
           <p className="subscribe-text">
