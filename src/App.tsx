@@ -2,8 +2,9 @@ import topImage from "./assets/top-image.svg"
 import bottomImage from "./assets/bottom-image.svg"
 import rocket from "./assets/rocket.svg"
 import "./App.css"
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import axios from "axios"
+import { Timer } from "./components/Timer/Timer"
 
 function getRemaningTime(start: number, current: number, end: number) {
   const countdown_mili = end - (current - start)
@@ -16,6 +17,10 @@ function getRemaningTime(start: number, current: number, end: number) {
   const sec = Math.floor(minutescountdown_mili / 1000)
 
   return { days: days, hours: hours, minutes: minutes, seconds: sec }
+}
+
+function showAlert() {
+  alert("Subscribed!")
 }
 
 function App() {
@@ -55,37 +60,13 @@ function App() {
         <div id="content">
           <h1>READY TO LAUNCH IN...</h1>
 
-          <div className="timer">
-            <div className="text">
-              <p id="day">Days</p>
-              <p id="hour">Hours</p>
-              <p id="minute">Minutes</p>
-              <p id="second">Seconds</p>
-            </div>
+          <Timer {...remainingTime} />
 
-            <div className="number">
-              <p id="day_number">
-                {String(remainingTime.days).padStart(2, "0")}
-              </p>
-              <p>:</p>
-              <p id="hour_number">
-                {String(remainingTime.hours).padStart(2, "0")}
-              </p>
-              <p>:</p>
-              <p id="minute_number">
-                {String(remainingTime.minutes).padStart(2, "0")}
-              </p>
-              <p>:</p>
-              <p id="second_number">
-                {String(remainingTime.seconds).padStart(2, "0")}
-              </p>
-            </div>
-          </div>
           <p className="subscribe-text">
             Subscribe to know more about the launch
           </p>
 
-          <button type="button">Subscribe</button>
+          <button onClick={showAlert}>Subscribe</button>
         </div>
         <img className="rocket" src={rocket} alt="" />
       </div>

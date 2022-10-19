@@ -1,0 +1,33 @@
+.timer {
+  max-width: 500px;
+  margin-bottom: 46px;
+}
+
+.text {
+  max-width: 100%;
+  display: flex;
+  gap: 90px;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 21px;
+  text-transform: capitalize;
+  color: #c8c8c8;
+  padding-left: 32px;
+  padding-right: 16px;
+}
+
+.number {
+  display: flex;
+  max-width: 100%;
+  gap: 16px;
+}
+
+.number p {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 72px;
+  line-height: 108px;
+  color: #4d4c59;
+  margin: 0;
+}
