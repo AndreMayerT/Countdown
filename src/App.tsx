@@ -35,7 +35,7 @@ function App() {
   const endTime = 2592000000
 
   useEffect(() => {
-    axios("http://localhost:3333/main").then((response) => {
+    axios("https://countdown-67.herokuapp.com/main").then((response) => {
       const startDate = new Date(response.data.createdAt)
       const startTimeMili = startDate.getTime()
       setstartTime(startTimeMili)
