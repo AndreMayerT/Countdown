@@ -3,21 +3,36 @@ import bottomImage from "./assets/bottom-image.svg"
 import rocket from "./assets/rocket.svg"
 import "./App.css"
 import React, { useState, useEffect } from "react"
+import axios from "axios"
 
-function Countdown() {}
+function dateDiffInDays(a: Date, b: Date) {
+  const _MS_PER_DAY = 1000 * 60 * 60 * 24
+  // Discard the time and time-zone information.
+  const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())
+  const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate())
+
+  return Math.floor((utc2 - utc1) / _MS_PER_DAY)
+}
 
 function App() {
-  const [seconds, setTime] = useState(
-    Number(localStorage.getItem("seconds") || 59)
-  )
+  const [StartTime, setStartTime] = useState(new Date())
+  const [EndTime, setEndTime] = useState()
+  const [CurrentTime, setCurrentTime] = useState(new Date())
 
   useEffect(() => {
-    const interval = setInterval(() => setTime(seconds - 1), 1000)
-    localStorage.setItem("seconds", JSON.stringify(seconds))
+    axios("http://localhost:3333/main").then((response) => {
+      setStartTime(response.data)
+    })
+  }, [])
+
+  useEffect(() => {
+    const dateNow = new Date()
+    const interval = setInterval(() => setCurrentTime(dateNow), 1000)
     return () => {
       clearInterval(interval)
+      console.log(CurrentTime)
     }
-  }, [seconds])
+  })
 
   return (
     <div className="App">
@@ -42,12 +57,7 @@ function App() {
               <p>:</p>
               <p id="minute_number">59</p>
               <p>:</p>
-              <p id="second_number">
-                {seconds.toLocaleString("en-US", {
-                  minimumIntegerDigits: 2,
-                  useGrouping: false,
-                })}
-              </p>
+              <p id="second_number">59</p>
             </div>
           </div>
           <p className="subscribe-text">
