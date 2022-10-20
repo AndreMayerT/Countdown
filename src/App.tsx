@@ -35,11 +35,17 @@ function App() {
   const endTime = 2592000000
 
   useEffect(() => {
-    axios("https://countdown-67.herokuapp.com/main").then((response) => {
-      const startDate = new Date(response.data.createdAt)
-      const startTimeMili = startDate.getTime()
-      setstartTime(startTimeMili)
-    })
+    async function fetch() {
+      await axios("https://countdown-67.herokuapp.com/main").then(
+        (response) => {
+          const startDate = new Date(response.data.createdAt)
+          const startTimeMili = startDate.getTime()
+          setstartTime(startTimeMili)
+        }
+      )
+    }
+
+    fetch()
   }, [])
 
   useEffect(() => {
